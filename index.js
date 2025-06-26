@@ -42,7 +42,7 @@ app.post('/register', async (req, res) => {
     try {
         const { username, password, role } = req.body;
         if (!username || !password || !role) return res.status(400).json({ error: "All fields required" });
-        if (!['user', 'driver'].includes(role)) return res.status(400).json({ error: "Role must be user or driver" });
+        if (!['user', 'driver', 'admin'].includes(role)) return res.status(400).json({ error: "Role must be user, driver, or admin" });
         if (await db.collection('users').findOne({ username })) return res.status(409).json({ error: "Username exists" });
         const hashed = await bcrypt.hash(password, 10);
         const result = await db.collection('users').insertOne({ username, password: hashed, role });
@@ -139,6 +139,172 @@ app.get('/rides/history', authenticate, async (req, res) => {
         res.json(rides);
     } catch {
         res.status(500).json({ error: "Failed to fetch history" });
+    }
+});
+
+// Admin middleware
+function isAdmin(req, res, next) {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: "Admin only" });
+    next();
+}
+
+// 3. Admin endpoints
+
+// View all users
+app.get('/admin/users', authenticate, isAdmin, async (req, res) => {
+    try {
+        const users = await db.collection('users').find({}, { projection: { password: 0 } }).toArray();
+        res.json(users);
+    } catch {
+        res.status(500).json({ error: "Failed to fetch users" });
+    }
+});
+
+// View all rides
+app.get('/admin/rides', authenticate, isAdmin, async (req, res) => {
+    try {
+        const rides = await db.collection('rides').find().toArray();
+        res.json(rides);
+    } catch {
+        res.status(500).json({ error: "Failed to fetch rides" });
+    }
+});
+
+// Delete a user
+app.delete('/admin/users/:userID', authenticate, isAdmin, async (req, res) => {
+    try {
+        const { userID } = req.params;
+        const result = await db.collection('users').deleteOne({ _id: new ObjectId(userID) });
+        if (result.deletedCount === 0) return res.status(404).json({ error: "User not found" });
+        res.json({ message: "User deleted" });
+    } catch {
+        res.status(500).json({ error: "Failed to delete user" });
+    }
+});
+
+// Update a user (admin)
+app.patch('/admin/users/:userID', authenticate, isAdmin, async (req, res) => {
+    try {
+        const { userID } = req.params;
+        const { username, role } = req.body;
+        if (!username && !role) return res.status(400).json({ error: "Nothing to update" });
+        const update = {};
+        if (username) update.username = username;
+        if (role) {
+            if (!['user', 'driver', 'admin'].includes(role)) return res.status(400).json({ error: "Invalid role" });
+            update.role = role;
+        }
+        const result = await db.collection('users').updateOne(
+            { _id: new ObjectId(userID) },
+            { $set: update }
+        );
+        if (result.matchedCount === 0) return res.status(404).json({ error: "User not found" });
+        res.json({ message: "User updated" });
+    } catch {
+        res.status(500).json({ error: "Failed to update user" });
+    }
+});
+
+// Analytics endpoint (admin)
+app.get('/admin/analytics', authenticate, isAdmin, async (req, res) => {
+    try {
+        // User analytics
+        const userAnalytics = await db.collection('rides').aggregate([
+            {
+                $addFields: {
+                    userObjId: { $toObjectId: "$userId" }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userObjId',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            { $unwind: '$user' },
+            {
+                $group: {
+                    _id: '$user.username',
+                    totalRides: { $sum: 1 },
+                    totalFare: { $sum: { $toDouble: "$amount" } },
+                    avgDistance: { $avg: { $toDouble: "$distance" } }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    username: '$_id',
+                    totalRides: 1,
+                    totalFare: { $round: ['$totalFare', 2] },
+                    avgDistance: { $round: ['$avgDistance', 2] }
+                }
+            }
+        ]).toArray();
+
+        // Driver analytics
+        const driverAnalytics = await db.collection('rides').aggregate([
+            {
+                $addFields: {
+                    driverObjId: { $toObjectId: "$driverId" }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'driverObjId',
+                    foreignField: '_id',
+                    as: 'driver'
+                }
+            },
+            { $unwind: '$driver' },
+            {
+                $group: {
+                    _id: '$driver.username',
+                    totalRides: { $sum: 1 },
+                    totalFare: { $sum: { $toDouble: "$amount" } },
+                    avgDistance: { $avg: { $toDouble: "$distance" } }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    drivername: '$_id',
+                    totalRides: 1,
+                    totalFare: { $round: ['$totalFare', 2] },
+                    avgDistance: { $round: ['$avgDistance', 2] }
+                }
+            }
+        ]).toArray();
+
+        // Overall totals
+        const overall = await db.collection('rides').aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalRides: { $sum: 1 },
+                    totalFare: { $sum: { $toDouble: "$amount" } },
+                    avgDistance: { $avg: { $toDouble: "$distance" } }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    totalRides: 1,
+                    totalFare: { $round: ['$totalFare', 2] },
+                    avgDistance: { $round: ['$avgDistance', 2] }
+                }
+            }
+        ]).toArray();
+
+        res.json({
+            userAnalytics,
+            driverAnalytics,
+            overall: overall[0] || {}
+        });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch analytics" });
     }
 });
 
