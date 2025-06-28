@@ -1,3 +1,8 @@
+// ==========================================================================================================================================
+// Copyright (c) 2025 Muhamad Fitri Bin Muhamad Edi (B122410708) & Muhamad Aznizul Humaidi Bin Zulkalnaini (B122410365). All rights reserved.
+// This file is part of the Grab Assignment for BERR 2243 - Database And Cloud System.
+// ==========================================================================================================================================
+
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcrypt');
@@ -11,7 +16,7 @@ app.use(require('cors')());
 
 let db;
 
-// Connect to MongoDB
+// --- Database Connection --- //
 async function connectToMongoDB() {
     const uri = 'mongodb://localhost:27017/';
     const client = new MongoClient(uri);
@@ -25,7 +30,7 @@ async function connectToMongoDB() {
 }
 connectToMongoDB();
 
-// Middleware: Auth
+// --- Middleware: Authentication --- //
 function authenticate(req, res, next) {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: "Unauthorized" });
@@ -36,6 +41,14 @@ function authenticate(req, res, next) {
         res.status(401).json({ error: "Invalid token" });
     }
 }
+
+// --- Middleware: Admin Check --- //
+function isAdmin(req, res, next) {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: "Admin only" });
+    next();
+}
+
+// --- User Endpoints --- //
 
 // Register
 app.post('/register', async (req, res) => {
@@ -65,6 +78,8 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// --- User Ride Endpoints --- //
+
 // Request a ride (user)
 app.post('/rides', authenticate, async (req, res) => {
     try {
@@ -76,38 +91,6 @@ app.post('/rides', authenticate, async (req, res) => {
         res.status(201).json({ rideID: result.insertedId });
     } catch {
         res.status(500).json({ error: "Failed to create ride" });
-    }
-});
-
-// Accept a ride (driver)
-app.patch('/rides/:rideID/accept', authenticate, async (req, res) => {
-    try {
-        if (req.user.role !== 'driver') return res.status(403).json({ error: "Only drivers can accept rides" });
-        const { rideID } = req.params;
-        const result = await db.collection('rides').updateOne(
-            { _id: new ObjectId(rideID), status: 'Pending' },
-            { $set: { status: 'Accepted', driverId: req.user.userId } }
-        );
-        if (result.matchedCount === 0) return res.status(404).json({ error: "Ride not found or already accepted" });
-        res.json({ message: "Ride accepted" });
-    } catch {
-        res.status(500).json({ error: "Failed to accept ride" });
-    }
-});
-
-// Cancel a ride (driver)
-app.patch('/rides/:rideID/cancel', authenticate, async (req, res) => {
-    try {
-        if (req.user.role !== 'driver') return res.status(403).json({ error: "Only drivers can cancel rides" });
-        const { rideID } = req.params;
-        const result = await db.collection('rides').updateOne(
-            { _id: new ObjectId(rideID), status: 'Accepted', driverId: req.user.userId },
-            { $set: { status: 'Cancelled' } }
-        );
-        if (result.matchedCount === 0) return res.status(404).json({ error: "Ride not found or not accepted by you" });
-        res.json({ message: "Ride cancelled" });
-    } catch {
-        res.status(500).json({ error: "Failed to cancel ride" });
     }
 });
 
@@ -142,13 +125,41 @@ app.get('/rides/history', authenticate, async (req, res) => {
     }
 });
 
-// Admin middleware
-function isAdmin(req, res, next) {
-    if (req.user.role !== 'admin') return res.status(403).json({ error: "Admin only" });
-    next();
-}
+// --- Driver Endpoints --- //
 
-// 3. Admin endpoints
+// Accept a ride (driver)
+app.patch('/rides/:rideID/accept', authenticate, async (req, res) => {
+    try {
+        if (req.user.role !== 'driver') return res.status(403).json({ error: "Only drivers can accept rides" });
+        const { rideID } = req.params;
+        const result = await db.collection('rides').updateOne(
+            { _id: new ObjectId(rideID), status: 'Pending' },
+            { $set: { status: 'Accepted', driverId: req.user.userId } }
+        );
+        if (result.matchedCount === 0) return res.status(404).json({ error: "Ride not found or already accepted" });
+        res.json({ message: "Ride accepted" });
+    } catch {
+        res.status(500).json({ error: "Failed to accept ride" });
+    }
+});
+
+// Cancel a ride (driver)
+app.patch('/rides/:rideID/cancel', authenticate, async (req, res) => {
+    try {
+        if (req.user.role !== 'driver') return res.status(403).json({ error: "Only drivers can cancel rides" });
+        const { rideID } = req.params;
+        const result = await db.collection('rides').updateOne(
+            { _id: new ObjectId(rideID), status: 'Accepted', driverId: req.user.userId },
+            { $set: { status: 'Cancelled' } }
+        );
+        if (result.matchedCount === 0) return res.status(404).json({ error: "Ride not found or not accepted by you" });
+        res.json({ message: "Ride cancelled" });
+    } catch {
+        res.status(500).json({ error: "Failed to cancel ride" });
+    }
+});
+
+// --- Admin Endpoints --- //
 
 // View all users
 app.get('/admin/users', authenticate, isAdmin, async (req, res) => {
@@ -205,7 +216,7 @@ app.patch('/admin/users/:userID', authenticate, isAdmin, async (req, res) => {
     }
 });
 
-// Analytics endpoint (admin)
+// --- Analytics Endpoint (admin) --- //
 app.get('/admin/analytics', authenticate, isAdmin, async (req, res) => {
     try {
         // User analytics
@@ -308,4 +319,5 @@ app.get('/admin/analytics', authenticate, isAdmin, async (req, res) => {
     }
 });
 
+// --- Start Server --- //
 app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
