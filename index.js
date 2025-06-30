@@ -18,7 +18,7 @@ let db;
 
 // --- Database Connection --- //
 async function connectToMongoDB() {
-    const uri = 'mongodb://localhost:27017/';
+    const uri = 'mongodb+srv://b122410708:b122410708@assignment.nuhogr8.mongodb.net/';
     const client = new MongoClient(uri);
     try {
         await client.connect();
@@ -126,6 +126,17 @@ app.get('/rides/history', authenticate, async (req, res) => {
 });
 
 // --- Driver Endpoints --- //
+
+// View available rides (driver)
+app.get('/rides/available', authenticate, async (req, res) => {
+    try {
+        if (req.user.role !== 'driver') return res.status(403).json({ error: "Only drivers can view available rides" });
+        const rides = await db.collection('rides').find({ status: 'Pending' }).toArray();
+        res.json(rides);
+    } catch {
+        res.status(500).json({ error: "Failed to fetch available rides" });
+    }
+});
 
 // Accept a ride (driver)
 app.patch('/rides/:rideID/accept', authenticate, async (req, res) => {
