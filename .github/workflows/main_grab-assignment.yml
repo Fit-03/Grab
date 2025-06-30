@@ -57,9 +57,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_FC1D3C4C9AF541B389C054A9D907FCF2 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2B6FDF54B0DD4C7B87AB8AFDE3BD1E7A }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B7BE1A0B44F94F889529C4DE61B567FD }}
+          client-id: ${{ secrets.__clientidsecretname__ }}
+          tenant-id: ${{ secrets.__tenantidsecretname__ }}
+          subscription-id: ${{ secrets.__subscriptionidsecretname__ }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -68,4 +68,3 @@ jobs:
           app-name: 'Grab-Assignment'
           slot-name: 'Production'
           package: .
-          
