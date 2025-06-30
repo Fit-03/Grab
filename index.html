@@ -2,171 +2,941 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Grab Assignment Web App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grab - Your Ride, Delivered</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 2em; }
-        .section { margin-bottom: 2em; }
-        label { display: block; margin-top: 1em; }
-        input, select { margin-top: 0.5em; }
-        button { margin-top: 1em; }
-        #response { margin-top: 2em; white-space: pre-wrap; background: #f4f4f4; padding: 1em; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #00C851 0%, #007E33 100%);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            animation: bounce 0.8s ease-out;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .logo::before {
+            content: "🚗";
+            font-size: 32px;
+        }
+
+        .logo-text {
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .logo-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+        }
+
+        .tab-header {
+            display: flex;
+            background: #f8f9fa;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            background: #00C851;
+            color: white;
+            border-bottom-color: #007E33;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00C851;
+            box-shadow: 0 0 0 3px rgba(0, 200, 81, 0.1);
+            transform: scale(1.02);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #00C851;
+            box-shadow: 0 0 0 3px rgba(0, 200, 81, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00C851, #007E33);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 200, 81, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 200, 81, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .dashboard {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding-top: 0;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 16px 0;
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #00C851;
+        }
+
+        .header-logo::before {
+            content: "🚗";
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .role-badge {
+            background: #00C851;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title::before {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .user-card .card-title::before { content: "📍"; }
+        .driver-card .card-title::before { content: "🚗"; }
+        .admin-card .card-title::before { content: "⚙️"; }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .admin-btn {
+            background: linear-gradient(135deg, #6f42c1, #563d7c);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+        }
+
+        .admin-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(111, 66, 193, 0.3);
+        }
+
+        .admin-btn::before {
+            font-size: 24px;
+        }
+
+        .admin-btn.users::before { content: "👥"; }
+        .admin-btn.rides::before { content: "🚗"; }
+        .admin-btn.analytics::before { content: "📊"; }
+
+        .response-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .response-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .response-content {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 200px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #495057;
+            white-space: pre-wrap;
+            overflow: auto;
+            border: 1px solid #e9ecef;
+        }
+
+        .empty-response {
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #f5c6cb;
+        }
+
+        .string { color: #28a745; }
+        .number { color: #007bff; }
+        .boolean { color: #fd7e14; }
+        .null { color: #6c757d; }
+        .key { color: #17a2b8; }
     </style>
 </head>
 <body>
-    <h1>Grab Assignment Web App</h1>
+    <!-- Login/Register Section -->
+    <div id="authSection" class="login-container">
+        <div>
+            <div class="logo-section">
+                <div class="logo"></div>
+                <div class="logo-text">Grab</div>
+                <div class="logo-subtitle">Your ride, delivered</div>
+            </div>
 
-    <div class="section">
-        <h2>Register</h2>
-        <form id="registerForm">
-            <label>Username: <input type="text" id="regUsername" required></label>
-            <label>Password: <input type="password" id="regPassword" required></label>
-            <label>Role:
-                <select id="regRole">
-                    <option value="user">User</option>
-                    <option value="driver">Driver</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </label>
-            <button type="submit">Register</button>
-        </form>
+            <div class="auth-card">
+                <div class="tab-header">
+                    <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                    <button class="tab-btn" onclick="switchTab('register')">Register</button>
+                </div>
+
+                <div class="form-container">
+                    <!-- Login Form -->
+                    <div id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" id="loginUsername" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="loginPassword" class="form-input" required>
+                        </div>
+                        <button class="btn-primary" onclick="login()">Sign In</button>
+                    </div>
+
+                    <!-- Register Form -->
+                    <div id="registerForm" class="hidden">
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" id="regUsername" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="regPassword" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Role</label>
+                            <select id="regRole" class="form-select">
+                                <option value="user">User</option>
+                                <option value="driver">Driver</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="register()">Create Account</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Response Display for Auth -->
+            <div id="authResponse" class="response-card hidden" style="margin-top: 20px; max-width: 400px;">
+                <div class="response-title">Response:</div>
+                <div id="authResponseContent" class="response-content"></div>
+            </div>
+        </div>
     </div>
 
-    <div class="section">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <label>Username: <input type="text" id="loginUsername" required></label>
-            <label>Password: <input type="password" id="loginPassword" required></label>
-            <button type="submit">Login</button>
-        </form>
-    </div>
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="dashboard hidden">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-logo">Grab</div>
+                <div class="user-info">
+                    <span id="welcomeText">Welcome</span>
+                    <span id="roleBadge" class="role-badge"></span>
+                    <button class="btn-logout" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
 
-    <div class="section" id="userActions" style="display:none;">
-        <h2>User Actions</h2>
-        <form id="rideForm">
-            <label>Destination: <input type="text" id="destination"></label>
-            <label>Distance: <input type="number" id="distance"></label>
-            <button type="submit">Request Ride</button>
-        </form>
-        <button onclick="getHistory()">View Ride History</button>
-    </div>
+        <div class="dashboard-grid">
+            <div>
+                <!-- User Actions -->
+                <div id="userActions" class="card user-card hidden">
+                    <h2 class="card-title">Request a Ride</h2>
+                    <div class="form-group">
+                        <label class="form-label">Destination</label>
+                        <input type="text" id="destination" class="form-input" placeholder="Where would you like to go?">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Distance (km)</label>
+                        <input type="number" id="distance" class="form-input" placeholder="0.0">
+                    </div>
+                    <button class="btn-primary" onclick="requestRide()">Request Ride</button>
+                    <button class="btn-secondary" onclick="getHistory()">📊 View Ride History</button>
+                </div>
 
-    <div class="section" id="driverActions" style="display:none;">
-        <h2>Driver Actions</h2>
-        <button onclick="getAvailableRides()">View Available Rides</button>
-    </div>
+                <!-- Driver Actions -->
+                <div id="driverActions" class="card driver-card hidden">
+                    <h2 class="card-title">Driver Dashboard</h2>
+                    <p style="color: #6c757d; margin-bottom: 20px;">View and accept available ride requests in your area.</p>
+                    <button class="btn-primary" onclick="getAvailableRides()">🗺️ View Available Rides</button>
+                </div>
 
-    <div class="section" id="adminActions" style="display:none;">
-        <h2>Admin Actions</h2>
-        <button onclick="getUsers()">View All Users</button>
-        <button onclick="getRides()">View All Rides</button>
-        <button onclick="getAnalytics()">View Analytics</button>
-    </div>
+                <!-- Admin Actions -->
+                <div id="adminActions" class="card admin-card hidden">
+                    <h2 class="card-title">Admin Panel</h2>
+                    <p style="color: #6c757d; margin-bottom: 20px;">Manage users, monitor rides, and view analytics.</p>
+                    <div class="admin-grid">
+                        <button class="admin-btn users" onclick="getUsers()">All Users</button>
+                        <button class="admin-btn rides" onclick="getRides()">All Rides</button>
+                        <button class="admin-btn analytics" onclick="getAnalytics()">Analytics</button>
+                    </div>
+                </div>
 
-    <div id="response"></div>
+                <!-- Payment Actions (User) -->
+                <div id="paymentActions" class="card user-card hidden">
+                    <h2 class="card-title">Pay for a Ride</h2>
+                    <div class="form-group">
+                        <label class="form-label">Ride ID</label>
+                        <input type="text" id="payRideId" class="form-input" placeholder="Enter Ride ID">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Method</label>
+                        <input type="text" id="paymentMethod" class="form-input" placeholder="e.g. cash">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amount</label>
+                        <input type="number" id="paymentAmount" class="form-input" placeholder="e.g. 20">
+                    </div>
+                    <button class="btn-primary" onclick="payRide()">Pay</button>
+                </div>
+
+                <!-- Driver Ride Actions -->
+                <div id="driverRideActions" class="card driver-card hidden">
+                    <h2 class="card-title">Accept/Cancel Ride</h2>
+                    <div class="form-group">
+                        <label class="form-label">Ride ID</label>
+                        <input type="text" id="acceptRideId" class="form-input" placeholder="Enter Ride ID to Accept">
+                        <button class="btn-primary" style="margin-top:10px;" onclick="acceptRide()">Accept Ride</button>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="cancelRideId" class="form-input" placeholder="Enter Ride ID to Cancel">
+                        <button class="btn-secondary" style="margin-top:10px;" onclick="cancelRide()">Cancel Ride</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Response Panel -->
+            <div class="response-card">
+                <div class="response-title">API Response</div>
+                <div id="response" class="response-content">
+                    <div class="empty-response">No response yet. Try performing an action.</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         let token = "";
         let role = "";
 
-        // Register
-        document.getElementById('registerForm').onsubmit = async function(e) {
-            e.preventDefault();
-            const res = await fetch('/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: regUsername.value,
-                    password: regPassword.value,
-                    role: regRole.value
-                })
-            });
-            document.getElementById('response').textContent = await res.text();
-        };
+        function switchTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabBtns = document.querySelectorAll('.tab-btn');
 
-        // Login
-        document.getElementById('loginForm').onsubmit = async function(e) {
-            e.preventDefault();
-            const res = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: loginUsername.value,
-                    password: loginPassword.value
-                })
-            });
-            const data = await res.json();
-            document.getElementById('response').textContent = JSON.stringify(data, null, 2);
-            if (data.token) {
-                token = data.token;
-                // Decode role from JWT (simple way)
-                const payload = JSON.parse(atob(token.split('.')[1]));
-                role = payload.role;
-                showActions(role);
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                tabBtns[0].classList.add('active');
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                tabBtns[1].classList.add('active');
             }
-        };
-
-        function showActions(role) {
-            document.getElementById('userActions').style.display = (role === 'user') ? '' : 'none';
-            document.getElementById('driverActions').style.display = (role === 'driver') ? '' : 'none';
-            document.getElementById('adminActions').style.display = (role === 'admin') ? '' : 'none';
         }
 
-        // Request Ride
-        document.getElementById('rideForm').onsubmit = async function(e) {
-            e.preventDefault();
-            const res = await fetch('/rides', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                },
-                body: JSON.stringify({
-                    destination: destination.value,
-                    distance: distance.value
-                })
-            });
-            document.getElementById('response').textContent = await res.text();
-        };
+        async function register() {
+            const username = document.getElementById('regUsername').value;
+            const password = document.getElementById('regPassword').value;
+            const roleValue = document.getElementById('regRole').value;
 
-        // View Ride History
+            if (!username || !password) {
+                showAuthResponse('Please fill in all fields', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password,
+                        role: roleValue
+                    })
+                });
+                const result = await res.text();
+                showAuthResponse(result, res.ok ? 'success' : 'error');
+            } catch (error) {
+                showAuthResponse('Registration failed: ' + error.message, 'error');
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                showAuthResponse('Please fill in all fields', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+                const data = await res.json();
+                showAuthResponse(JSON.stringify(data, null, 2), res.ok ? 'success' : 'error');
+                
+                if (data.token) {
+                    token = data.token;
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    role = payload.role;
+                    showDashboard();
+                }
+            } catch (error) {
+                showAuthResponse('Login failed: ' + error.message, 'error');
+            }
+        }
+
+        function showAuthResponse(message, type) {
+            const authResponse = document.getElementById('authResponse');
+            const authResponseContent = document.getElementById('authResponseContent');
+            
+            authResponseContent.textContent = message;
+            authResponseContent.className = 'response-content ' + (type === 'success' ? 'success-message' : 'error-message');
+            authResponse.classList.remove('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('fade-in');
+            
+            document.getElementById('roleBadge').textContent = role;
+            document.getElementById('welcomeText').textContent = `Welcome, ${role}!`;
+            
+            // Show appropriate actions based on role
+            document.getElementById('userActions').classList.toggle('hidden', role !== 'user');
+            document.getElementById('driverActions').classList.toggle('hidden', role !== 'driver');
+            document.getElementById('adminActions').classList.toggle('hidden', role !== 'admin');
+            document.getElementById('paymentActions').classList.toggle('hidden', role !== 'user');
+            document.getElementById('driverRideActions').classList.toggle('hidden', role !== 'driver');
+        }
+
+        function logout() {
+            token = "";
+            role = "";
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('authResponse').classList.add('hidden');
+            document.getElementById('response').innerHTML = '<div class="empty-response">No response yet. Try performing an action.</div>';
+            
+            // Clear form fields
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('regUsername').value = '';
+            document.getElementById('regPassword').value = '';
+        }
+
+        async function requestRide() {
+            const destination = document.getElementById('destination').value;
+            const distance = document.getElementById('distance').value;
+
+            if (!destination || !distance) {
+                updateResponse('Please fill in destination and distance');
+                return;
+            }
+
+            try {
+                const res = await fetch('/rides', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        destination: destination,
+                        distance: parseFloat(distance)
+                    })
+                });
+                const result = await res.text();
+                updateResponse(result);
+            } catch (error) {
+                updateResponse('Ride request failed: ' + error.message);
+            }
+        }
+
+        async function payRide() {
+            const rideId = document.getElementById('payRideId').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const amount = document.getElementById('paymentAmount').value;
+
+            if (!rideId || !paymentMethod || !amount) {
+                updateResponse('Please fill in all payment fields');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/rides/${rideId}/pay`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        paymentMethod: paymentMethod,
+                        amount: parseFloat(amount)
+                    })
+                });
+                const result = await res.text();
+                updateResponse(result);
+            } catch (error) {
+                updateResponse('Payment failed: ' + error.message);
+            }
+        }
+
         async function getHistory() {
-            const res = await fetch('/rides/history', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            document.getElementById('response').textContent = await res.text();
+            await apiCall('/rides/history');
         }
 
-        // Driver: View Available Rides
         async function getAvailableRides() {
-            const res = await fetch('/rides/available', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            document.getElementById('response').textContent = await res.text();
+            await apiCall('/rides/available');
         }
 
-        // Admin: View All Users
+        async function acceptRide() {
+            const rideId = document.getElementById('acceptRideId').value;
+            if (!rideId) {
+                updateResponse('Please enter Ride ID to accept');
+                return;
+            }
+            try {
+                const res = await fetch(`/rides/${rideId}/accept`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const result = await res.text();
+                updateResponse(result);
+            } catch (error) {
+                updateResponse('Accept ride failed: ' + error.message);
+            }
+        }
+
+        async function cancelRide() {
+            const rideId = document.getElementById('cancelRideId').value;
+            if (!rideId) {
+                updateResponse('Please enter Ride ID to cancel');
+                return;
+            }
+            try {
+                const res = await fetch(`/rides/${rideId}/cancel`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const result = await res.text();
+                updateResponse(result);
+            } catch (error) {
+                updateResponse('Cancel ride failed: ' + error.message);
+            }
+        }
+
         async function getUsers() {
-            const res = await fetch('/admin/users', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            document.getElementById('response').textContent = await res.text();
+            await apiCall('/admin/users');
         }
 
-        // Admin: View All Rides
         async function getRides() {
-            const res = await fetch('/admin/rides', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            document.getElementById('response').textContent = await res.text();
+            await apiCall('/admin/rides');
         }
 
-        // Admin: View Analytics
         async function getAnalytics() {
-            const res = await fetch('/admin/analytics', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            document.getElementById('response').textContent = await res.text();
+            await apiCall('/admin/analytics');
         }
+
+        async function apiCall(endpoint) {
+            try {
+                const res = await fetch(endpoint, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const result = await res.text();
+                updateResponse(result);
+            } catch (error) {
+                updateResponse('API call failed: ' + error.message);
+            }
+        }
+
+        function updateResponse(content) {
+            const responseDiv = document.getElementById('response');
+            let html = "";
+
+            try {
+                const obj = JSON.parse(content);
+
+                // Array of objects: render as table
+                if (Array.isArray(obj) && obj.length > 0 && typeof obj[0] === 'object') {
+                    html += "<table style='width:100%;border-collapse:collapse;'>";
+                    // Table header
+                    html += "<tr>";
+                    Object.keys(obj[0]).forEach(key => {
+                        html += `<th style='border:1px solid #e9ecef;padding:8px;background:#f1f3f4;text-align:left;'>${key}</th>`;
+                    });
+                    html += "</tr>";
+                    // Table rows
+                    obj.forEach(row => {
+                        html += "<tr>";
+                        Object.values(row).forEach(val => {
+                            html += `<td style='border:1px solid #e9ecef;padding:8px;'>${val}</td>`;
+                        });
+                        html += "</tr>";
+                    });
+                    html += "</table>";
+                }
+                // Single object: render as key-value list
+                else if (typeof obj === 'object' && obj !== null) {
+                    html += "<ul style='list-style:none;padding:0;'>";
+                    Object.entries(obj).forEach(([key, val]) => {
+                        html += `<li><strong>${key}:</strong> ${typeof val === 'object' ? JSON.stringify(val) : val}</li>`;
+                    });
+                    html += "</ul>";
+                }
+                // Other: fallback to pretty JSON
+                else {
+                    html = `<pre>${syntaxHighlight(obj)}</pre>`;
+                }
+            } catch {
+                // Not JSON, show as plain text
+                html = `<pre style="color:#721c24;background:#f8d7da;border-radius:8px;padding:12px;">${content}</pre>`;
+            }
+
+            responseDiv.innerHTML = html;
+            responseDiv.classList.add('fade-in');
+            setTimeout(() => responseDiv.classList.remove('fade-in'), 500);
+        }
+
+        // Syntax highlighting for JSON
+        function syntaxHighlight(json) {
+            if (typeof json != 'string') {
+                json = JSON.stringify(json, undefined, 2);
+            }
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                let cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return `<span class="${cls}">${match}</span>`;
+            });
+        }
+
+        // Add enter key support for forms
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const activeElement = document.activeElement;
+                if (activeElement.closest('#loginForm')) {
+                    login();
+                } else if (activeElement.closest('#registerForm')) {
+                    register();
+                }
+            }
+        });
     </script>
 </body>
 </html>
