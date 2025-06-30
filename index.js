@@ -19,7 +19,7 @@ let db;
 
 // --- Database Connection --- //
 async function connectToMongoDB() {
-    const uri = 'mongodb+srv://b122410708:b122410708@assignment.nuhogr8.mongodb.net/';
+    const uri = process.env.MONGODB_URI || 'mongodb+srv://b122410708:b122410708@assignment.nuhogr8.mongodb.net/';
     const client = new MongoClient(uri);
     try {
         await client.connect();
