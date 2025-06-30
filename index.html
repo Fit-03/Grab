@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Grab Assignment Web App</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        .section { margin-bottom: 2em; }
+        label { display: block; margin-top: 1em; }
+        input, select { margin-top: 0.5em; }
+        button { margin-top: 1em; }
+        #response { margin-top: 2em; white-space: pre-wrap; background: #f4f4f4; padding: 1em; }
+    </style>
+</head>
+<body>
+    <h1>Grab Assignment Web App</h1>
+
+    <div class="section">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <label>Username: <input type="text" id="regUsername" required></label>
+            <label>Password: <input type="password" id="regPassword" required></label>
+            <label>Role:
+                <select id="regRole">
+                    <option value="user">User</option>
+                    <option value="driver">Driver</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </label>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <div class="section">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label>Username: <input type="text" id="loginUsername" required></label>
+            <label>Password: <input type="password" id="loginPassword" required></label>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <div class="section" id="userActions" style="display:none;">
+        <h2>User Actions</h2>
+        <form id="rideForm">
+            <label>Destination: <input type="text" id="destination"></label>
+            <label>Distance: <input type="number" id="distance"></label>
+            <button type="submit">Request Ride</button>
+        </form>
+        <button onclick="getHistory()">View Ride History</button>
+    </div>
+
+    <div class="section" id="driverActions" style="display:none;">
+        <h2>Driver Actions</h2>
+        <button onclick="getAvailableRides()">View Available Rides</button>
+    </div>
+
+    <div class="section" id="adminActions" style="display:none;">
+        <h2>Admin Actions</h2>
+        <button onclick="getUsers()">View All Users</button>
+        <button onclick="getRides()">View All Rides</button>
+        <button onclick="getAnalytics()">View Analytics</button>
+    </div>
+
+    <div id="response"></div>
+
+    <script>
+        let token = "";
+        let role = "";
+
+        // Register
+        document.getElementById('registerForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const res = await fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: regUsername.value,
+                    password: regPassword.value,
+                    role: regRole.value
+                })
+            });
+            document.getElementById('response').textContent = await res.text();
+        };
+
+        // Login
+        document.getElementById('loginForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: loginUsername.value,
+                    password: loginPassword.value
+                })
+            });
+            const data = await res.json();
+            document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+            if (data.token) {
+                token = data.token;
+                // Decode role from JWT (simple way)
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                role = payload.role;
+                showActions(role);
+            }
+        };
+
+        function showActions(role) {
+            document.getElementById('userActions').style.display = (role === 'user') ? '' : 'none';
+            document.getElementById('driverActions').style.display = (role === 'driver') ? '' : 'none';
+            document.getElementById('adminActions').style.display = (role === 'admin') ? '' : 'none';
+        }
+
+        // Request Ride
+        document.getElementById('rideForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const res = await fetch('/rides', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    destination: destination.value,
+                    distance: distance.value
+                })
+            });
+            document.getElementById('response').textContent = await res.text();
+        };
+
+        // View Ride History
+        async function getHistory() {
+            const res = await fetch('/rides/history', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            document.getElementById('response').textContent = await res.text();
+        }
+
+        // Driver: View Available Rides
+        async function getAvailableRides() {
+            const res = await fetch('/rides/available', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            document.getElementById('response').textContent = await res.text();
+        }
+
+        // Admin: View All Users
+        async function getUsers() {
+            const res = await fetch('/admin/users', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            document.getElementById('response').textContent = await res.text();
+        }
+
+        // Admin: View All Rides
+        async function getRides() {
+            const res = await fetch('/admin/rides', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            document.getElementById('response').textContent = await res.text();
+        }
+
+        // Admin: View Analytics
+        async function getAnalytics() {
+            const res = await fetch('/admin/analytics', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            document.getElementById('response').textContent = await res.text();
+        }
+    </script>
+</body>
+</html>
