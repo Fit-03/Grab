@@ -18,5 +18,13 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.17.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fit-03/Grab.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Fit-03/Grab/issues"
+  },
+  "homepage": "https://github.com/Fit-03/Grab#readme"
 }
