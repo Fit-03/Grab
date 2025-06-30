@@ -7,6 +7,7 @@ const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -329,6 +330,9 @@ app.get('/admin/analytics', authenticate, isAdmin, async (req, res) => {
         res.status(500).json({ error: "Failed to fetch analytics" });
     }
 });
+
+// --- Serve static files (HTML, CSS, JS) --- //
+app.use(express.static(path.join(__dirname)));
 
 // --- Start Server --- //
 app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
