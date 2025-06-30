@@ -25,5 +25,6 @@
   "bugs": {
     "url": "https://github.com/Fit-03/Grab/issues"
   },
-  "homepage": "https://github.com/Fit-03/Grab#readme"
+  "homepage": "https://github.com/Fit-03/Grab#readme",
+  "devDependencies": {}
 }
