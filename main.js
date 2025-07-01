@@ -317,7 +317,72 @@ let token = "";
         }
 
         async function getAnalytics() {
-            await apiCall('/admin/analytics');
+            try {
+                const res = await fetch('/admin/analytics', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await res.json();
+
+                let html = `
+                <div class="analytics-section">
+                    <h3>User Analytics</h3>
+                    <table class="analytics-table">
+                        <tr>
+                            <th>Username</th>
+                            <th>Total Rides</th>
+                            <th>Total Fare</th>
+                            <th>Avg Distance</th>
+                        </tr>
+                        ${data.userAnalytics.map(u => `
+                            <tr>
+                                <td>${u.username}</td>
+                                <td>${u.totalRides}</td>
+                                <td>RM ${u.totalFare.toFixed(2)}</td>
+                                <td>${u.avgDistance.toFixed(2)} km</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                </div>
+                <div class="analytics-section">
+                    <h3>Driver Analytics</h3>
+                    <table class="analytics-table">
+                        <tr>
+                            <th>Driver Name</th>
+                            <th>Total Rides</th>
+                            <th>Total Fare</th>
+                            <th>Avg Distance</th>
+                        </tr>
+                        ${data.driverAnalytics.map(d => `
+                            <tr>
+                                <td>${d.drivername}</td>
+                                <td>${d.totalRides}</td>
+                                <td>RM ${d.totalFare.toFixed(2)}</td>
+                                <td>${d.avgDistance.toFixed(2)} km</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                </div>
+                <div class="analytics-section">
+                    <h3>Overall</h3>
+                    <table class="analytics-table">
+                        <tr>
+                            <th>Total Rides</th>
+                            <th>Total Fare</th>
+                            <th>Avg Distance</th>
+                        </tr>
+                        <tr>
+                            <td>${data.overall.totalRides}</td>
+                            <td>RM ${data.overall.totalFare.toFixed(2)}</td>
+                            <td>${data.overall.avgDistance.toFixed(2)} km</td>
+                        </tr>
+                    </table>
+                </div>
+                `;
+
+                document.getElementById('response').innerHTML = html;
+            } catch (error) {
+                updateResponse('Failed to load analytics: ' + error.message);
+            }
         }
 
         async function apiCall(endpoint) {
