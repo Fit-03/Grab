@@ -209,13 +209,17 @@ app.delete('/admin/users/:userID', authenticate, isAdmin, async (req, res) => {
 app.patch('/admin/users/:userID', authenticate, isAdmin, async (req, res) => {
     try {
         const { userID } = req.params;
-        const { username, role } = req.body;
-        if (!username && !role) return res.status(400).json({ error: "Nothing to update" });
+        const { username, role, password } = req.body;
+        if (!username && !role && !password) return res.status(400).json({ error: "Nothing to update" });
         const update = {};
         if (username) update.username = username;
         if (role) {
             if (!['user', 'driver', 'admin'].includes(role)) return res.status(400).json({ error: "Invalid role" });
             update.role = role;
+        }
+        if (password) {
+            const hashed = await bcrypt.hash(password, 10);
+            update.password = hashed;
         }
         const result = await db.collection('users').updateOne(
             { _id: new ObjectId(userID) },

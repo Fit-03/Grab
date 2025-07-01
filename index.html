@@ -4,459 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grab - Your Ride, Delivered</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #00C851 0%, #007E33 100%);
-            min-height: 100vh;
-            transition: all 0.3s ease;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .login-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .auth-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-            width: 100%;
-            max-width: 400px;
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .logo-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
-            animation: bounce 0.8s ease-out;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
-        }
-
-        .logo::before {
-            content: "🚗";
-            font-size: 32px;
-        }
-
-        .logo-text {
-            color: white;
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .logo-subtitle {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 16px;
-        }
-
-        .tab-header {
-            display: flex;
-            background: #f8f9fa;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 16px;
-            border: none;
-            background: transparent;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-bottom: 3px solid transparent;
-        }
-
-        .tab-btn.active {
-            background: #00C851;
-            color: white;
-            border-bottom-color: #007E33;
-        }
-
-        .tab-btn:hover:not(.active) {
-            background: #e9ecef;
-        }
-
-        .form-container {
-            padding: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #fff;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #00C851;
-            box-shadow: 0 0 0 3px rgba(0, 200, 81, 0.1);
-            transform: scale(1.02);
-        }
-
-        .form-select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 16px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .form-select:focus {
-            outline: none;
-            border-color: #00C851;
-            box-shadow: 0 0 0 3px rgba(0, 200, 81, 0.1);
-        }
-
-        .btn-primary {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #00C851, #007E33);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 200, 81, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 200, 81, 0.4);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .dashboard {
-            background: #f8f9fa;
-            min-height: 100vh;
-            padding-top: 0;
-        }
-
-        .header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 16px 0;
-            margin-bottom: 30px;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .header-logo {
-            display: flex;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #00C851;
-        }
-
-        .header-logo::before {
-            content: "🚗";
-            margin-right: 10px;
-            font-size: 28px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .role-badge {
-            background: #00C851;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: capitalize;
-        }
-
-        .btn-logout {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-logout:hover {
-            background: #c82333;
-            transform: translateY(-1px);
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            border: 1px solid #e9ecef;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-        }
-
-        .card-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
-            display: flex;
-            align-items: center;
-        }
-
-        .card-title::before {
-            margin-right: 10px;
-            font-size: 24px;
-        }
-
-        .user-card .card-title::before { content: "📍"; }
-        .driver-card .card-title::before { content: "🚗"; }
-        .admin-card .card-title::before { content: "⚙️"; }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-            transform: translateY(-1px);
-        }
-
-        .admin-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .admin-btn {
-            background: linear-gradient(135deg, #6f42c1, #563d7c);
-            color: white;
-            border: none;
-            padding: 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            text-align: center;
-        }
-
-        .admin-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(111, 66, 193, 0.3);
-        }
-
-        .admin-btn::before {
-            font-size: 24px;
-        }
-
-        .admin-btn.users::before { content: "👥"; }
-        .admin-btn.rides::before { content: "🚗"; }
-        .admin-btn.analytics::before { content: "📊"; }
-
-        .response-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e9ecef;
-        }
-
-        .response-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .response-content {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            min-height: 200px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            color: #495057;
-            white-space: pre-wrap;
-            overflow: auto;
-            border: 1px solid #e9ecef;
-        }
-
-        .empty-response {
-            color: #6c757d;
-            font-style: italic;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-
-            .user-info {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .admin-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid #c3e6cb;
-        }
-
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid #f5c6cb;
-        }
-
-        .string { color: #28a745; }
-        .number { color: #007bff; }
-        .boolean { color: #fd7e14; }
-        .null { color: #6c757d; }
-        .key { color: #17a2b8; }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <!-- Login/Register Section -->
@@ -481,9 +31,15 @@
                             <label class="form-label">Username</label>
                             <input type="text" id="loginUsername" class="form-input" required>
                         </div>
-                        <div class="form-group">
+                        <!-- Login Password Field -->
+                        <div class="form-group password-group">
                             <label class="form-label">Password</label>
-                            <input type="password" id="loginPassword" class="form-input" required>
+                            <div class="password-wrapper">
+                                <input type="password" id="loginPassword" class="form-input" required>
+                                <span class="toggle-password" onclick="togglePassword('loginPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
                         </div>
                         <button class="btn-primary" onclick="login()">Sign In</button>
                     </div>
@@ -494,9 +50,15 @@
                             <label class="form-label">Username</label>
                             <input type="text" id="regUsername" class="form-input" required>
                         </div>
-                        <div class="form-group">
+                        <!-- Register Password Field -->
+                        <div class="form-group password-group">
                             <label class="form-label">Password</label>
-                            <input type="password" id="regPassword" class="form-input" required>
+                            <div class="password-wrapper">
+                                <input type="password" id="regPassword" class="form-input" required>
+                                <span class="toggle-password" onclick="togglePassword('regPassword', this)">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Role</label>
@@ -555,6 +117,48 @@
                     <button class="btn-primary" onclick="getAvailableRides()">🗺️ View Available Rides</button>
                 </div>
 
+                <!-- Payment Actions (User) -->
+                <div id="paymentActions" class="card user-card hidden">
+                    <h2 class="card-title">Pay for a Ride</h2>
+                    <div class="form-group">
+                        <label class="form-label">Ride ID</label>
+                        <select id="payRideId" class="form-input">
+                            <option value="">Select Accepted Ride</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" onclick="refreshAcceptedRides()">🔄 Refresh Rides</button>
+                    <div class="form-group">
+                        <label class="form-label">Payment Method</label>
+                        <input type="text" id="paymentMethod" class="form-input" placeholder="e.g. cash">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amount</label>
+                        <input type="number" id="paymentAmount" class="form-input" placeholder="e.g. 20">
+                    </div>
+                    <button class="btn-primary" onclick="payRide()">Pay</button>
+                </div>
+                
+                <!-- Driver Ride Actions -->
+                <div id="driverRideActions" class="card driver-card hidden">
+                    <h2 class="card-title">Accept/Cancel Ride</h2>
+                    <div class="form-group">
+                        <label class="form-label">Pending Rides (Accept)</label>
+                        <select id="acceptRideId" class="form-input">
+                            <option value="">Select Pending Ride</option>
+                        </select>
+                        <button class="btn-primary" style="margin-top:10px;" onclick="refreshPendingRides()">🔄 Refresh</button>
+                        <button class="btn-primary" style="margin-top:10px;" onclick="acceptRide()">Accept Ride</button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Accepted Rides (Cancel)</label>
+                        <select id="cancelRideId" class="form-input">
+                            <option value="">Select Accepted Ride</option>
+                        </select>
+                        <button class="btn-secondary" style="margin-top:10px;" onclick="refreshDriverAcceptedRides()">🔄 Refresh</button>
+                        <button class="btn-secondary" style="margin-top:10px;" onclick="cancelRide()">Cancel Ride</button>
+                    </div>
+                </div>
+
                 <!-- Admin Actions -->
                 <div id="adminActions" class="card admin-card hidden">
                     <h2 class="card-title">Admin Panel</h2>
@@ -566,35 +170,40 @@
                     </div>
                 </div>
 
-                <!-- Payment Actions (User) -->
-                <div id="paymentActions" class="card user-card hidden">
-                    <h2 class="card-title">Pay for a Ride</h2>
-                    <div class="form-group">
-                        <label class="form-label">Ride ID</label>
-                        <input type="text" id="payRideId" class="form-input" placeholder="Enter Ride ID">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Payment Method</label>
-                        <input type="text" id="paymentMethod" class="form-input" placeholder="e.g. cash">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Amount</label>
-                        <input type="number" id="paymentAmount" class="form-input" placeholder="e.g. 20">
-                    </div>
-                    <button class="btn-primary" onclick="payRide()">Pay</button>
-                </div>
-
-                <!-- Driver Ride Actions -->
-                <div id="driverRideActions" class="card driver-card hidden">
-                    <h2 class="card-title">Accept/Cancel Ride</h2>
-                    <div class="form-group">
-                        <label class="form-label">Ride ID</label>
-                        <input type="text" id="acceptRideId" class="form-input" placeholder="Enter Ride ID to Accept">
-                        <button class="btn-primary" style="margin-top:10px;" onclick="acceptRide()">Accept Ride</button>
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="cancelRideId" class="form-input" placeholder="Enter Ride ID to Cancel">
-                        <button class="btn-secondary" style="margin-top:10px;" onclick="cancelRide()">Cancel Ride</button>
+                <!-- Admin User Management -->
+                <div id="adminUserManagement" class="card admin-card hidden">
+                    <h2 class="card-title">Manage Users</h2>
+                    <button class="btn-primary" onclick="loadAdminUsers()">🔄 Refresh Users</button>
+                    <div id="adminUsersTable"></div>
+                    <!-- Edit User Modal -->
+                    <div id="editUserModal" class="modal hidden">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeEditUserModal()">&times;</span>
+                            <h3>Edit User</h3>
+                            <input type="hidden" id="editUserId">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" id="editUsername" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Role</label>
+                                <select id="editRole" class="form-input">
+                                    <option value="user">user</option>
+                                    <option value="driver">driver</option>
+                                    <option value="admin">admin</option>
+                                </select>
+                            </div>
+                            <div class="form-group password-group">
+                                <label>New Password <span style="color:#888;font-size:0.9em">(leave blank to keep current)</span></label>
+                                <div class="password-wrapper">
+                                    <input type="password" id="editPassword" class="form-input" autocomplete="new-password">
+                                    <span class="toggle-password" onclick="togglePassword('editPassword', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <button class="btn-primary" onclick="submitEditUser()">Save</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -608,335 +217,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        let token = "";
-        let role = "";
-
-        function switchTab(tab) {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            const tabBtns = document.querySelectorAll('.tab-btn');
-
-            tabBtns.forEach(btn => btn.classList.remove('active'));
-            
-            if (tab === 'login') {
-                loginForm.classList.remove('hidden');
-                registerForm.classList.add('hidden');
-                tabBtns[0].classList.add('active');
-            } else {
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
-                tabBtns[1].classList.add('active');
-            }
-        }
-
-        async function register() {
-            const username = document.getElementById('regUsername').value;
-            const password = document.getElementById('regPassword').value;
-            const roleValue = document.getElementById('regRole').value;
-
-            if (!username || !password) {
-                showAuthResponse('Please fill in all fields', 'error');
-                return;
-            }
-
-            try {
-                const res = await fetch('/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: username,
-                        password: password,
-                        role: roleValue
-                    })
-                });
-                const result = await res.text();
-                showAuthResponse(result, res.ok ? 'success' : 'error');
-            } catch (error) {
-                showAuthResponse('Registration failed: ' + error.message, 'error');
-            }
-        }
-
-        async function login() {
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-
-            if (!username || !password) {
-                showAuthResponse('Please fill in all fields', 'error');
-                return;
-            }
-
-            try {
-                const res = await fetch('/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
-                });
-                const data = await res.json();
-                showAuthResponse(JSON.stringify(data, null, 2), res.ok ? 'success' : 'error');
-                
-                if (data.token) {
-                    token = data.token;
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    role = payload.role;
-                    showDashboard();
-                }
-            } catch (error) {
-                showAuthResponse('Login failed: ' + error.message, 'error');
-            }
-        }
-
-        function showAuthResponse(message, type) {
-            const authResponse = document.getElementById('authResponse');
-            const authResponseContent = document.getElementById('authResponseContent');
-            
-            authResponseContent.textContent = message;
-            authResponseContent.className = 'response-content ' + (type === 'success' ? 'success-message' : 'error-message');
-            authResponse.classList.remove('hidden');
-        }
-
-        function showDashboard() {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('dashboardSection').classList.remove('hidden');
-            document.getElementById('dashboardSection').classList.add('fade-in');
-            
-            document.getElementById('roleBadge').textContent = role;
-            document.getElementById('welcomeText').textContent = `Welcome, ${role}!`;
-            
-            // Show appropriate actions based on role
-            document.getElementById('userActions').classList.toggle('hidden', role !== 'user');
-            document.getElementById('driverActions').classList.toggle('hidden', role !== 'driver');
-            document.getElementById('adminActions').classList.toggle('hidden', role !== 'admin');
-            document.getElementById('paymentActions').classList.toggle('hidden', role !== 'user');
-            document.getElementById('driverRideActions').classList.toggle('hidden', role !== 'driver');
-        }
-
-        function logout() {
-            token = "";
-            role = "";
-            document.getElementById('authSection').classList.remove('hidden');
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('authResponse').classList.add('hidden');
-            document.getElementById('response').innerHTML = '<div class="empty-response">No response yet. Try performing an action.</div>';
-            
-            // Clear form fields
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('regUsername').value = '';
-            document.getElementById('regPassword').value = '';
-        }
-
-        async function requestRide() {
-            const destination = document.getElementById('destination').value;
-            const distance = document.getElementById('distance').value;
-
-            if (!destination || !distance) {
-                updateResponse('Please fill in destination and distance');
-                return;
-            }
-
-            try {
-                const res = await fetch('/rides', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    },
-                    body: JSON.stringify({
-                        destination: destination,
-                        distance: parseFloat(distance)
-                    })
-                });
-                const result = await res.text();
-                updateResponse(result);
-            } catch (error) {
-                updateResponse('Ride request failed: ' + error.message);
-            }
-        }
-
-        async function payRide() {
-            const rideId = document.getElementById('payRideId').value;
-            const paymentMethod = document.getElementById('paymentMethod').value;
-            const amount = document.getElementById('paymentAmount').value;
-
-            if (!rideId || !paymentMethod || !amount) {
-                updateResponse('Please fill in all payment fields');
-                return;
-            }
-
-            try {
-                const res = await fetch(`/rides/${rideId}/pay`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    },
-                    body: JSON.stringify({
-                        paymentMethod: paymentMethod,
-                        amount: parseFloat(amount)
-                    })
-                });
-                const result = await res.text();
-                updateResponse(result);
-            } catch (error) {
-                updateResponse('Payment failed: ' + error.message);
-            }
-        }
-
-        async function getHistory() {
-            await apiCall('/rides/history');
-        }
-
-        async function getAvailableRides() {
-            await apiCall('/rides/available');
-        }
-
-        async function acceptRide() {
-            const rideId = document.getElementById('acceptRideId').value;
-            if (!rideId) {
-                updateResponse('Please enter Ride ID to accept');
-                return;
-            }
-            try {
-                const res = await fetch(`/rides/${rideId}/accept`, {
-                    method: 'PATCH',
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                const result = await res.text();
-                updateResponse(result);
-            } catch (error) {
-                updateResponse('Accept ride failed: ' + error.message);
-            }
-        }
-
-        async function cancelRide() {
-            const rideId = document.getElementById('cancelRideId').value;
-            if (!rideId) {
-                updateResponse('Please enter Ride ID to cancel');
-                return;
-            }
-            try {
-                const res = await fetch(`/rides/${rideId}/cancel`, {
-                    method: 'PATCH',
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                const result = await res.text();
-                updateResponse(result);
-            } catch (error) {
-                updateResponse('Cancel ride failed: ' + error.message);
-            }
-        }
-
-        async function getUsers() {
-            await apiCall('/admin/users');
-        }
-
-        async function getRides() {
-            await apiCall('/admin/rides');
-        }
-
-        async function getAnalytics() {
-            await apiCall('/admin/analytics');
-        }
-
-        async function apiCall(endpoint) {
-            try {
-                const res = await fetch(endpoint, {
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                const result = await res.text();
-                updateResponse(result);
-            } catch (error) {
-                updateResponse('API call failed: ' + error.message);
-            }
-        }
-
-        function updateResponse(content) {
-            const responseDiv = document.getElementById('response');
-            let html = "";
-
-            try {
-                const obj = JSON.parse(content);
-
-                // Array of objects: render as table
-                if (Array.isArray(obj) && obj.length > 0 && typeof obj[0] === 'object') {
-                    html += "<table style='width:100%;border-collapse:collapse;'>";
-                    // Table header
-                    html += "<tr>";
-                    Object.keys(obj[0]).forEach(key => {
-                        html += `<th style='border:1px solid #e9ecef;padding:8px;background:#f1f3f4;text-align:left;'>${key}</th>`;
-                    });
-                    html += "</tr>";
-                    // Table rows
-                    obj.forEach(row => {
-                        html += "<tr>";
-                        Object.values(row).forEach(val => {
-                            html += `<td style='border:1px solid #e9ecef;padding:8px;'>${val}</td>`;
-                        });
-                        html += "</tr>";
-                    });
-                    html += "</table>";
-                }
-                // Single object: render as key-value list
-                else if (typeof obj === 'object' && obj !== null) {
-                    html += "<ul style='list-style:none;padding:0;'>";
-                    Object.entries(obj).forEach(([key, val]) => {
-                        html += `<li><strong>${key}:</strong> ${typeof val === 'object' ? JSON.stringify(val) : val}</li>`;
-                    });
-                    html += "</ul>";
-                }
-                // Other: fallback to pretty JSON
-                else {
-                    html = `<pre>${syntaxHighlight(obj)}</pre>`;
-                }
-            } catch {
-                // Not JSON, show as plain text
-                html = `<pre style="color:#721c24;background:#f8d7da;border-radius:8px;padding:12px;">${content}</pre>`;
-            }
-
-            responseDiv.innerHTML = html;
-            responseDiv.classList.add('fade-in');
-            setTimeout(() => responseDiv.classList.remove('fade-in'), 500);
-        }
-
-        // Syntax highlighting for JSON
-        function syntaxHighlight(json) {
-            if (typeof json != 'string') {
-                json = JSON.stringify(json, undefined, 2);
-            }
-            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-                let cls = 'number';
-                if (/^"/.test(match)) {
-                    if (/:$/.test(match)) {
-                        cls = 'key';
-                    } else {
-                        cls = 'string';
-                    }
-                } else if (/true|false/.test(match)) {
-                    cls = 'boolean';
-                } else if (/null/.test(match)) {
-                    cls = 'null';
-                }
-                return `<span class="${cls}">${match}</span>`;
-            });
-        }
-
-        // Add enter key support for forms
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const activeElement = document.activeElement;
-                if (activeElement.closest('#loginForm')) {
-                    login();
-                } else if (activeElement.closest('#registerForm')) {
-                    register();
-                }
-            }
-        });
-    </script>
 </body>
 </html>
