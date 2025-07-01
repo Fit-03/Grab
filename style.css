@@ -417,25 +417,6 @@
             }
         }
 
-        /* Responsive: Stack admin action buttons on small screens */
-        @media (max-width: 600px) {
-            #adminUsersTable td {
-                padding: 10px 6px;
-            }
-            .admin-action-btn {
-                display: block;
-                width: 100%;
-                margin: 4px 0 0 0;
-                font-size: 1em;
-            }
-            .admin-action-btn:first-child {
-                margin-top: 0;
-            }
-            #adminUsersTable td:last-child {
-                min-width: 90px;
-            }
-        }
-
         .fade-in {
             animation: fadeIn 0.5s ease-in-out;
         }

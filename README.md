@@ -24,21 +24,47 @@ It features user, driver, and admin roles, ride management, payments, analytics,
 - **Authentication:** JWT
 
 ## Online Demo
-
 You can test the deployed app here:  
 👉 [https://grab-assignment-cxefb2gbg9chbpda.eastasia-01.azurewebsites.net/](https://grab-assignment-cxefb2gbg9chbpda.eastasia-01.azurewebsites.net/)
 
-## Folder Structure
+## Usage
 
-```
-/Assignment
-  |-- index.js         # Backend (Express API)
-  |-- main.js          # Frontend logic
-  |-- index.html       # Main HTML file
-  |-- style.css        # Stylesheet
-  |-- README.md        # This file
-  |-- .env             # Environment variables (not committed)
-```
+### User
+- Register as a user
+- Log in to your account
+- Request a ride by entering your destination and distance
+- Wait for driver to accept or cancel your ride
+- Pay for your accepted rides
+- View your ride history
+
+### Driver
+- Register as a driver
+- Log in to your account
+- View available ride requests
+- Accept or cancel ride requests
+- View your accepted and completed rides
+
+### Admin
+- Register or log in with admin credentials
+- View and manage all users (edit or delete accounts)
+- View all rides in the system
+- Access analytics and statistics for users, drivers, and overall rides
+
+### Demo Accounts
+
+Instead of using the demo account, you can create your own account.
+
+| Role   | Username | Password  |
+|--------|----------|-----------|
+| Admin  | admin    | admin     |
+| Driver | driver   | driver    |
+| User   | user     | user      |
+
+## User Roles
+
+- **User:** Can request and pay for rides.
+- **Driver:** Can accept/cancel rides.
+- **Admin:** Can manage users, view all rides, and see analytics.
 
 ## API Endpoints (Summary)
 
@@ -55,6 +81,17 @@ You can test the deployed app here:
 - `DELETE /admin/users/:userID` - Delete user (admin)
 - `GET /admin/rides` - List all rides (admin)
 - `GET /admin/analytics` - Get analytics (admin)
+
+## Folder Structure
+```
+/Assignment
+  |-- index.js         # Backend (Express API)
+  |-- main.js          # Frontend logic
+  |-- index.html       # Main HTML file
+  |-- style.css        # Stylesheet
+  |-- README.md        # This file
+  |-- .env             # Environment variables (not committed)
+```
 
 ## Credits
 
